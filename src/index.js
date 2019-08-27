@@ -12,7 +12,6 @@ function Square(props) {
 }
 
 class Board extends React.Component {
-
   renderSquare(i) {
     return (
       <Square 
@@ -126,7 +125,7 @@ class Game extends React.Component {
 
 ReactDOM.render(
   <Game />,
-  document.getElementById('root')
+  document.getElementById('root123')
 );
 
 // Given an array of 9 squares, this function will check for a winner and return 'X', 'O', or null as appropriate.
