@@ -84,17 +84,25 @@ class Game extends React.Component {
   render() {
     const history = this.state.history;
     const current = history[this.state.stepNumber];
+    const last = this.state.stepNumber > 0 ? history[this.state.stepNumber - 1] : null;
+    const [row, col] = calculateRowAndCol(current, last);
     const winner = calculateWinner(current.squares);
 
+    // Javascript map function syntax: 
+    /* var new_array = arr.map(function callback(currentValue[, index[, array]]) {
+     //   Return element for new_array
+        }[, thisArg])
+    */
+   // 占位step: currentValue, move: index
     const moves = history.map((step, move) => {
       const desc = move ? 
-        'Go to move #' + move : 
+        'Go to move #' + move +', row:'+row+', col:'+col :
         `Go to game start`;
-        return (
-          <li key={move}>
-            <button onClick={() => this.jumpTo(move)}>{desc}</button>
-          </li>
-        );
+      return (
+        <li key={move}>
+          <button onClick={() => this.jumpTo(move)}>{desc}</button>
+        </li>
+      );
     });
 
     let status;
@@ -147,4 +155,25 @@ function calculateWinner(squares) {
     }
   }
   return null;
+}
+function calculateRowAndCol(currentSquares, lastSquares) {
+  var index, row, col;
+  for (let i = 0; i<currentSquares.length; i++) {
+    if (currentSquares[i] != null && lastSquares[i] == null) {
+      index = i;
+    }
+  }
+  if ([0,1,2].includes(index)) {
+      row = 0;
+      col = index;
+  }
+  else if ([3,4,5].includes(index)) {
+    row = 1;
+    col = index - 3;
+  } 
+  else if ([6,7,8].includes(index)) {
+    row = 2;
+    col = index - 6;
+  }
+  return (row, col);
 }
