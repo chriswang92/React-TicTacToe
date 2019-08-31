@@ -50,6 +50,9 @@ class Game extends React.Component {
     this.state={
       history: [{
         squares: Array(9).fill(null),
+        row: Number,
+        col: Number,
+        clicked: null,
       }],
       xIsNext: true,
       stepNumber: 0,
@@ -60,32 +63,35 @@ class Game extends React.Component {
     const history = this.state.history.slice(0, this.state.stepNumber + 1);
     const current = history[history.length - 1];
     const squares = current.squares.slice();
+    const [calulatedRow, calculatedCol] = calculateRowAndCol(i);
+
     // Ignoring a click if someone has won the game or a Square is already filled
     if (calculateWinner(squares) || squares[i]) {
       return;
     }
     squares[i] = this.state.xIsNext ? 'X' : 'O';
+
     this.setState({
       history: history.concat([{
         squares: squares,
+        row: calulatedRow,
+        col: calculatedCol,
       }]),
       xIsNext: !this.state.xIsNext,
       stepNumber: history.length,
     });
   }
 
-  jumpTo(step) {
+  jumpTo(stepNumber) {
     this.setState({
-      stepNumber: step,
-      xIsNext: (step % 2) === 0,
+      stepNumber: stepNumber,
+      xIsNext: (stepNumber % 2) === 0,
     });
   }
 
   render() {
     const history = this.state.history;
     const current = history[this.state.stepNumber];
-    const last = this.state.stepNumber > 0 ? history[this.state.stepNumber - 1] : null;
-    const [row, col] = calculateRowAndCol(current, last);
     const winner = calculateWinner(current.squares);
 
     // Javascript map function syntax: 
@@ -96,11 +102,14 @@ class Game extends React.Component {
    // 占位step: currentValue, move: index
     const moves = history.map((step, move) => {
       const desc = move ? 
-        'Go to move #' + move +', row:'+row+', col:'+col :
-        `Go to game start`;
+        'Go to move #' + move
+         +', ('+ step.row
+         +',' + step.col + ')' 
+         : `Go to game start`;
+      let bold = move === this.state.stepNumber ? 'bolded' : '';
       return (
         <li key={move}>
-          <button onClick={() => this.jumpTo(move)}>{desc}</button>
+          <button className={bold} onClick={() => this.jumpTo(move)}>{desc}</button>
         </li>
       );
     });
@@ -156,24 +165,19 @@ function calculateWinner(squares) {
   }
   return null;
 }
-function calculateRowAndCol(currentSquares, lastSquares) {
-  var index, row, col;
-  for (let i = 0; i<currentSquares.length; i++) {
-    if (currentSquares[i] != null && lastSquares[i] == null) {
-      index = i;
-    }
-  }
+function calculateRowAndCol(index) {
+  var row = -1, col = -1;
   if ([0,1,2].includes(index)) {
-      row = 0;
-      col = index;
+    row = 1;
+    col = index + 1;
   }
   else if ([3,4,5].includes(index)) {
-    row = 1;
-    col = index - 3;
+    row = 2;
+    col = index - 2;
   } 
   else if ([6,7,8].includes(index)) {
-    row = 2;
-    col = index - 6;
+    row = 3;
+    col = index - 5;
   }
-  return (row, col);
+  return [row, col];
 }
