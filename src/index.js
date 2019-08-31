@@ -33,7 +33,7 @@ class Board extends React.Component {
       for (let j = i * size; j < i * size + size; j ++) {
         // inner loop: #size squares per row
         //let color = this.props.winner.includes(this.props.squares[j])
-        divs.push(this.renderSquare(j, this.props.winner));When someone wins, highlight the three squares that caused the win.
+        divs.push(this.renderSquare(j, this.props.winner));
       }
       // rows is an array contains #size amount of rows and have indexes as keys for elements, each row is an array of divs 
       rows.push(<div key={i} className="board-row">{divs}</div>);
