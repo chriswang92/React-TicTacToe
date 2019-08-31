@@ -49,7 +49,7 @@ class Board extends React.Component {
 class Game extends React.Component {
   constructor(props) {
     super(props);
-    this.state={
+    this.state = {
       history: [{
         squares: Array(9).fill(null),
         row: null,
@@ -57,6 +57,7 @@ class Game extends React.Component {
       }],
       xIsNext: true,
       stepNumber: 0,
+      isAscending: true,
     };
   }
 
@@ -90,8 +91,14 @@ class Game extends React.Component {
     });
   }
 
+  changeOrder() {
+    this.setState({
+      isAscending: !this.state.isAscending,
+    });
+  }
+
   render() {
-    const history = this.state.history;
+    var history = this.state.history;
     const current = history[this.state.stepNumber];
     const winner = calculateWinner(current.squares);
 
@@ -102,12 +109,18 @@ class Game extends React.Component {
     */
    // 占位step: currentValue, move: index
     const moves = history.map((currentValue, index) => {
-      const desc = index ? 
-        'Go to move #' + index
-        //Bonus#1. Display the location for each move in the format (col, row) in the move history list.
-         +', ('+ currentValue.row
-         +',' + currentValue.col + ')' 
-         : `Go to game start`;
+      var desc;
+      if (index) {
+        index = this.state.isAscending? index : (8 - 1 - index);
+        desc = 'Go to move #' + index
+      //Bonus#1. Display the location for each move in the format (col, row) in the move history list.
+        +', ('+ currentValue.row
+        +',' + currentValue.col + ')'
+      }
+      else {
+        desc = `Go to game start`;
+      }
+        
       //Bonus#2. Bold the currently selected item in the move list.
       let bold = index === this.state.stepNumber ? 'bolded' : '';
       return (
@@ -117,28 +130,22 @@ class Game extends React.Component {
       );
     });
 
-    let status;
-    if (winner) {
-      status = 'Winner: ' + winner;
-    } else {
-      status = 'Next player: ' + (this.state.xIsNext ? 'X' : 'O');
-    }
+    let status = winner ? 'Winner: ' + winner : 'Next player: ' + (this.state.xIsNext ? 'X' : 'O');
 
     return (
       <div className="game">
         <div className="game-board">
-          <Board 
-            squares={current.squares}
-            onClick={(i) => this.handleClick(i)}
-          />
+          <Board squares={current.squares} onClick={(i) => this.handleClick(i)} />
         </div>
         <div className="game-info">
           <div>{status}</div>
+          <button onClick={()=>this.changeOrder()}>change order</button>
           <ol>{moves}</ol>
         </div>
       </div>
     );
   }
+
 }
 
 // ========================================
@@ -170,15 +177,15 @@ function calculateWinner(squares) {
 }
 function calculateRowAndCol(index) {
   var row = -1, col = -1;
-  if ([0,1,2].includes(index)) {
+  if ([0, 1, 2].includes(index)) {
     row = 1;
     col = index + 1;
   }
-  else if ([3,4,5].includes(index)) {
+  else if ([3, 4, 5].includes(index)) {
     row = 2;
     col = index - 2;
   } 
-  else if ([6,7,8].includes(index)) {
+  else if ([6, 7, 8].includes(index)) {
     row = 3;
     col = index - 5;
   }
