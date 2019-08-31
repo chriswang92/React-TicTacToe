@@ -5,17 +5,18 @@ import './index.css';
 // function component
 function Square(props) {
   return (
-    <button className="square" style={{background: 'yellow'}} onClick={props.onClick}>
+    <button style = {props.style} className="square" onClick={props.onClick}>
       {props.value}
     </button>
   );
 }
 
 class Board extends React.Component {
-  renderSquare(i) {
+  renderSquare(i, winner) {
     return (
-      <Square 
+      <Square
         value = {this.props.squares[i]}
+        style = {{background: winner && winner.includes(this.props.squares[i]) ? 'yellow' : 'white'}}
         onClick = {() => this.props.onClick(i)}
       />
     );
@@ -31,7 +32,8 @@ class Board extends React.Component {
       // outter loop: #size rows
       for (let j = i * size; j < i * size + size; j ++) {
         // inner loop: #size squares per row
-        divs.push(this.renderSquare(j));
+        //let color = this.props.winner.includes(this.props.squares[j])
+        divs.push(this.renderSquare(j, this.props.winner));When someone wins, highlight the three squares that caused the win.
       }
       // rows is an array contains #size amount of rows and have indexes as keys for elements, each row is an array of divs 
       rows.push(<div key={i} className="board-row">{divs}</div>);
@@ -121,11 +123,10 @@ class Game extends React.Component {
     if (!this.state.isAscending) moves = moves.slice().reverse();
 
     let status = winner ? 'Winner: ' + winner : 'Next player: ' + (this.state.xIsNext ? 'X' : 'O');
-
     return (
       <div className="game">
         <div className="game-board">
-          <Board squares={current.squares} onClick={(i) => this.handleClick(i)} />
+          <Board winner={winner} squares={current.squares} onClick={(i) => this.handleClick(i)} />
         </div>
         <div className="game-info">
           <div>{status}</div>
