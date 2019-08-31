@@ -5,7 +5,7 @@ import './index.css';
 // function component
 function Square(props) {
   return (
-    <button className="square" onClick={props.onClick}>
+    <button className="square" style={{background: 'yellow'}} onClick={props.onClick}>
       {props.value}
     </button>
   );
@@ -15,7 +15,7 @@ class Board extends React.Component {
   renderSquare(i) {
     return (
       <Square 
-        value = {this.props.squares[i]} 
+        value = {this.props.squares[i]}
         onClick = {() => this.props.onClick(i)}
       />
     );
@@ -90,37 +90,25 @@ class Game extends React.Component {
       xIsNext: (stepNumber % 2) === 0,
     });
   }
-
-  changeOrder() {
-    this.setState({
-      isAscending: !this.state.isAscending,
-    });
-  }
-
+  
   render() {
-    var history = this.state.history;
+    const history = this.state.history;
     const current = history[this.state.stepNumber];
     const winner = calculateWinner(current.squares);
-
+    
     // Javascript map function syntax: 
     /* var new_array = arr.map(function callback(currentValue[, index[, array]]) {
      //   Return element for new_array
         }[, thisArg])
     */
    // 占位step: currentValue, move: index
-    const moves = history.map((currentValue, index) => {
-      var desc;
-      if (index) {
-        index = this.state.isAscending? index : (8 - 1 - index);
-        desc = 'Go to move #' + index
+    var moves = history.map((currentValue, index) => {
+      const desc = index ? 'Go to move #' + index
       //Bonus#1. Display the location for each move in the format (col, row) in the move history list.
         +', ('+ currentValue.row
-        +',' + currentValue.col + ')'
-      }
-      else {
-        desc = `Go to game start`;
-      }
-        
+        +',' + currentValue.col + ')' 
+        : `Go to game start`;
+
       //Bonus#2. Bold the currently selected item in the move list.
       let bold = index === this.state.stepNumber ? 'bolded' : '';
       return (
@@ -129,6 +117,8 @@ class Game extends React.Component {
         </li>
       );
     });
+    // Bonus#4. Add a toggle button that lets you sort the moves in either ascending or descending order.
+    if (!this.state.isAscending) moves = moves.slice().reverse();
 
     let status = winner ? 'Winner: ' + winner : 'Next player: ' + (this.state.xIsNext ? 'X' : 'O');
 
@@ -139,8 +129,8 @@ class Game extends React.Component {
         </div>
         <div className="game-info">
           <div>{status}</div>
-          <button onClick={()=>this.changeOrder()}>change order</button>
           <ol>{moves}</ol>
+          <button onClick={()=>this.setState({isAscending: ! this.state.isAscending})}>change order</button>
         </div>
       </div>
     );
