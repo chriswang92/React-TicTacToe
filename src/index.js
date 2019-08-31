@@ -22,7 +22,13 @@ class Board extends React.Component {
   }
 
   render() {
+    var desc = '<div>';
+    //for (let i = 0; i<2; i++)
+
+    desc += '</div>';
     return (
+      desc
+      /*
       <div>
         <div className="board-row">
           {this.renderSquare(0)}
@@ -40,6 +46,7 @@ class Board extends React.Component {
           {this.renderSquare(8)}
         </div>
       </div>
+      */
     );
   }
 }
@@ -50,9 +57,8 @@ class Game extends React.Component {
     this.state={
       history: [{
         squares: Array(9).fill(null),
-        row: Number,
-        col: Number,
-        clicked: null,
+        row: null,
+        col: null,
       }],
       xIsNext: true,
       stepNumber: 0,
@@ -100,16 +106,16 @@ class Game extends React.Component {
         }[, thisArg])
     */
    // 占位step: currentValue, move: index
-    const moves = history.map((step, move) => {
-      const desc = move ? 
-        'Go to move #' + move
-         +', ('+ step.row
-         +',' + step.col + ')' 
+    const moves = history.map((currentValue, index) => {
+      const desc = index ? 
+        'Go to move #' + index
+         +', ('+ currentValue.row
+         +',' + currentValue.col + ')' 
          : `Go to game start`;
-      let bold = move === this.state.stepNumber ? 'bolded' : '';
+      let bold = index === this.state.stepNumber ? 'bolded' : '';
       return (
-        <li key={move}>
-          <button className={bold} onClick={() => this.jumpTo(move)}>{desc}</button>
+        <li key={index}>
+          <button className={bold} onClick={() => this.jumpTo(index)}>{desc}</button>
         </li>
       );
     });
