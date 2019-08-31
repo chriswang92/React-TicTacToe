@@ -22,31 +22,26 @@ class Board extends React.Component {
   }
 
   render() {
-    var desc = '<div>';
-    //for (let i = 0; i<2; i++)
-
-    desc += '</div>';
+    //Bonus#3. Rewrite Board to use two loops to make the squares instead of hardcoding them.
+    let divs = [];
+    var rows = [];
+    const size = 3;
+    // total squares = size * size
+    for (let i = 0; i < size; i ++) {
+      // outter loop: #size rows
+      for (let j = i * size; j < i * size + size; j ++) {
+        // inner loop: #size squares per row
+        divs.push(this.renderSquare(j));
+      }
+      // rows is an array contains #size amount of rows and have indexes as keys for elements, each row is an array of divs 
+      rows.push(<div key={i} className="board-row">{divs}</div>);
+      // reset divs
+      divs = [];
+    }
     return (
-      desc
-      /*
       <div>
-        <div className="board-row">
-          {this.renderSquare(0)}
-          {this.renderSquare(1)}
-          {this.renderSquare(2)}
-        </div>
-        <div className="board-row">
-          {this.renderSquare(3)}
-          {this.renderSquare(4)}
-          {this.renderSquare(5)}
-        </div>
-        <div className="board-row">
-          {this.renderSquare(6)}
-          {this.renderSquare(7)}
-          {this.renderSquare(8)}
-        </div>
+        {rows}
       </div>
-      */
     );
   }
 }
@@ -109,9 +104,11 @@ class Game extends React.Component {
     const moves = history.map((currentValue, index) => {
       const desc = index ? 
         'Go to move #' + index
+        //Bonus#1. Display the location for each move in the format (col, row) in the move history list.
          +', ('+ currentValue.row
          +',' + currentValue.col + ')' 
          : `Go to game start`;
+      //Bonus#2. Bold the currently selected item in the move list.
       let bold = index === this.state.stepNumber ? 'bolded' : '';
       return (
         <li key={index}>
