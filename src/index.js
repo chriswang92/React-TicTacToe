@@ -33,7 +33,8 @@ class Board extends React.Component {
       // outter loop: #size rows
       for (let j = i * size; j < i * size + size; j ++) {
         // inner loop: #size squares per row
-        const color = {background: this.props.winner && this.props.winner.includes(this.props.squares[j]) ? 'yellow' : 'white'};
+        const color = {background: this.props.winner && this.props.winner[1].includes(j) ? 'yellow' : 'white'};
+        //{background: this.props.winner && this.props.winner.includes(this.props.squares[j]) ? 'yellow' : 'white'};
         divs.push(this.renderSquare(j, color));
       }
       // rows is an array contains #size amount of rows and have indexes as keys for elements, each row is an array of divs 
@@ -123,7 +124,7 @@ class Game extends React.Component {
     // Bonus#4. Add a toggle button that lets you sort the moves in either ascending or descending order.
     if (!this.state.isAscending) moves = moves.slice().reverse();
 
-    let status = winner ? 'Winner: ' + winner : 'Next player: ' + (this.state.xIsNext ? 'X' : 'O');
+    let status = winner ? 'Winner: ' + winner[0] : 'Next player: ' + (this.state.xIsNext ? 'X' : 'O');
 
     let count = 0;
     current.squares.forEach(element => {
@@ -131,15 +132,14 @@ class Game extends React.Component {
         count ++;
       }
     });
-    if (count === 9) {
+    if (winner == null && count === 9) {
       status = 'DRAW';
     }
-
 
     return (
       <div className="game">
         <div className="game-board">
-          <Board winner={status === 'DRAW' ? null : winner} squares={current.squares} onClick={(i) => this.handleClick(i)} />
+          <Board winner={winner} squares={current.squares} onClick={(i) => this.handleClick(i)} />
         </div>
         <div className="game-info">
           <div>{status}</div>
@@ -174,7 +174,7 @@ function calculateWinner(squares) {
   for (let i = 0;i < lines.length; i++) {
     const [a,b,c] = lines[i];
     if (squares[a] && squares[a] === squares[b] && squares[a] === squares[c]) {
-      return squares[a];
+      return [squares[a], [a,b,c]];
     }
   }
   return null;
