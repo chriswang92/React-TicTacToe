@@ -27,7 +27,7 @@ class Board extends React.Component {
     //Bonus#3. Rewrite Board to use two loops to make the squares instead of hardcoding them.
     let divs = [];
     var rows = [];
-    const size = 3;
+    const size = this.props.boardsize ? this.props.boardsize : 3;
     // total squares = size * size
     for (let i = 0; i < size; i ++) {
       // outter loop: #size rows
@@ -62,6 +62,7 @@ class Game extends React.Component {
       xIsNext: true,
       stepNumber: 0,
       isAscending: true,
+      boardSize: 2,
     };
   }
 
@@ -95,6 +96,12 @@ class Game extends React.Component {
     });
   }
   
+  handleSizeChange(event) {
+    this.setState({
+      boardsize: event.target.value
+    });
+  }
+
   render() {
     const history = this.state.history;
     const current = history[this.state.stepNumber];
@@ -139,7 +146,10 @@ class Game extends React.Component {
     return (
       [<div className="game">
         <div className="game-board">
-          <Board winner={winner} squares={current.squares} onClick={(i) => this.handleClick(i)} />
+          <label>Size:<input type="text"
+          value={this.state.boardsize} onChange={this.handleSizeChange}></input>
+          </label>
+          <Board boardsize={this.state.boardsize} winner={winner} squares={current.squares} onClick={(i) => this.handleClick(i)} />
         </div>
         <div className="game-info">
           <div>{status}</div>
