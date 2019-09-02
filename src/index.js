@@ -137,7 +137,7 @@ class Game extends React.Component {
     }
 
     return (
-      <div className="game">
+      [<div className="game">
         <div className="game-board">
           <Board winner={winner} squares={current.squares} onClick={(i) => this.handleClick(i)} />
         </div>
@@ -146,7 +146,23 @@ class Game extends React.Component {
           <ol>{moves}</ol>
           <button onClick={()=>this.setState({isAscending: ! this.state.isAscending})}>change order</button>
         </div>
-      </div>
+        <div>
+      <hr />
+      TicTacToe features:
+      <ul>
+          <li>Lets you play tic-tac-toe,</li>
+          <li>Indicates when a player has won the game,</li> 
+          <li>Stores a game’s history as a game progresses,</li>
+          <li>Allows players to review a game’s history and see previous versions of a game’s board.</li>
+          <li>Display the location for each move in the format (col, row) in the move history list.</li>
+          <li>Bold the currently selected item in the move list.</li>
+          <li>Rewrite Board to use two loops to make the squares instead of hardcoding them.</li>
+          <li>Add a toggle button that lets you sort the moves in either ascending or descending order.</li>
+          <li>When someone wins, highlight the three squares that caused the win.</li>
+          <li>When no one wins, display a message about the result being a draw.</li>
+      </ul>
+        </div>
+      </div>]
     );
   }
 
