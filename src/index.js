@@ -2,6 +2,7 @@ import React from 'react';
 import ReactDOM from 'react-dom';
 import './index.css';
 import Clock from './Clock.js';
+import Calculator from './TemperatureCalculator.js';
 
 // function components
 function GameDesc() {  
