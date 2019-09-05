@@ -48,7 +48,7 @@ class Board extends React.Component {
     //Bonus#3. Rewrite Board to use two loops to make the squares instead of hardcoding them.
     let divs = [];
     var rows = [];
-    const size = this.props.boardsize && this.props.boardsize <= 7 ? this.props.boardsize : 3;
+    const size = this.props.boardsize && this.props.boardsize <= 40 ? this.props.boardsize : 3;
     // total squares = size * size
     for (let i = 0; i < size; i ++) {
       // outter loop: #size rows
@@ -178,7 +178,7 @@ class Game extends React.Component {
             <label>
               Board size:
               <input type="number" value={this.state.boardsize} onChange={this.handleSizeChange} />
-              <WarningBanner warn={this.state.boardsize > 7}></WarningBanner>
+              <WarningBanner warn={this.state.boardsize > 40}></WarningBanner>
             </label>
           </form>
           <Board boardsize={this.state.boardsize} winner={winner} squares={current.squares} onClick={(i) => this.handleClick(i)} />
@@ -282,7 +282,7 @@ function WarningBanner(props) {
   }
   return (
     <div className="warning">
-      Warning! Size over limit(7)!
+      Warning! Size over limit(40)!
     </div>
   );
 }
