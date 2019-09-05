@@ -1,8 +1,27 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
 import './index.css';
+import Clock from './Clock.js';
 
-// function component
+// function components
+function GameDesc() {  
+  return (
+    <div> TicTacToe features:
+      <ul>
+          <li>Lets you play tic-tac-toe,</li>
+          <li>Indicates when a player has won the game,</li> 
+          <li>Stores a game’s history as a game progresses,</li>
+          <li>Allows players to review a game’s history and see previous versions of a game’s board.</li>
+          <li>Display the location for each move in the format (col, row) in the move history list.</li>
+          <li>Bold the currently selected item in the move list.</li>
+          <li>Rewrite Board to use two loops to make the squares instead of hardcoding them.</li>
+          <li>Add a toggle button that lets you sort the moves in either ascending or descending order.</li>
+          <li>When someone wins, highlight the three squares that caused the win.</li>
+          <li>When no one wins, display a message about the result being a draw.</li>
+      </ul>
+    </div>
+  );
+}
 function Square(props) {
   return (
     <button style = {props.style} className="square" onClick={props.onClick}>
@@ -11,10 +30,12 @@ function Square(props) {
   );
 }
 
+// React Components
 class Board extends React.Component {
   renderSquare(i, color) {
     return (
       <Square
+        key={i.toString()}
         value = {this.props.squares[i]}
         //Bonus#5. When someone wins, highlight the three squares that caused the win.
         style = {color}
@@ -27,24 +48,26 @@ class Board extends React.Component {
     //Bonus#3. Rewrite Board to use two loops to make the squares instead of hardcoding them.
     let divs = [];
     var rows = [];
-    const size = this.props.boardsize ? this.props.boardsize : 3;
+    const size = this.props.boardsize && this.props.boardsize <= 7 ? this.props.boardsize : 3;
     // total squares = size * size
     for (let i = 0; i < size; i ++) {
       // outter loop: #size rows
       for (let j = i * size; j < i * size + size; j ++) {
         // inner loop: #size squares per row
         const color = {background: this.props.winner && this.props.winner[1].includes(j) ? 'yellow' : 'white'};
-        //{background: this.props.winner && this.props.winner.includes(this.props.squares[j]) ? 'yellow' : 'white'};
         divs.push(this.renderSquare(j, color));
       }
       // rows is an array contains #size amount of rows and have indexes as keys for elements, each row is an array of divs 
-      rows.push(<div key={i} className="board-row">{divs}</div>);
+      rows.push(<div className="board-row">{divs}</div>);
       // reset divs
       divs = [];
     }
     return (
       <div>
+      <div>current boardsize：{this.props.boardsize}</div>
+      <div>
         {rows}
+      </div>
       </div>
     );
   }
@@ -62,8 +85,19 @@ class Game extends React.Component {
       xIsNext: true,
       stepNumber: 0,
       isAscending: true,
-      boardSize: 2,
+      boardsize: null
     };
+    this.handleSizeChange = this.handleSizeChange.bind(this);
+    this.handleSubmit = this.handleSubmit.bind(this);
+  }
+  
+  handleSizeChange(event) {
+    this.setState({boardsize: Number(event.target.value)});
+  }
+
+  handleSubmit(event) {
+    alert('A name was submitted: ' + this.state.boardsize);
+    event.preventDefault();
   }
 
   handleClick(i) {
@@ -93,12 +127,6 @@ class Game extends React.Component {
     this.setState({
       stepNumber: stepNumber,
       xIsNext: (stepNumber % 2) === 0,
-    });
-  }
-  
-  handleSizeChange(event) {
-    this.setState({
-      boardsize: event.target.value
     });
   }
 
@@ -144,11 +172,15 @@ class Game extends React.Component {
     }
 
     return (
-      [<div className="game">
+      <div className="game">
         <div className="game-board">
-          <label>Size:<input type="text"
-          value={this.state.boardsize} onChange={this.handleSizeChange}></input>
-          </label>
+          <form onSubmit={this.handleSubmit}>
+            <label>
+              Board size:
+              <input type="number" value={this.state.boardsize} onChange={this.handleSizeChange} />
+              <WarningBanner warn={this.state.boardsize > 7}></WarningBanner>
+            </label>
+          </form>
           <Board boardsize={this.state.boardsize} winner={winner} squares={current.squares} onClick={(i) => this.handleClick(i)} />
         </div>
         <div className="game-info">
@@ -156,49 +188,71 @@ class Game extends React.Component {
           <ol>{moves}</ol>
           <button onClick={()=>this.setState({isAscending: ! this.state.isAscending})}>change order</button>
         </div>
-        <div>
-      <hr />
-      TicTacToe features:
-      <ul>
-          <li>Lets you play tic-tac-toe,</li>
-          <li>Indicates when a player has won the game,</li> 
-          <li>Stores a game’s history as a game progresses,</li>
-          <li>Allows players to review a game’s history and see previous versions of a game’s board.</li>
-          <li>Display the location for each move in the format (col, row) in the move history list.</li>
-          <li>Bold the currently selected item in the move list.</li>
-          <li>Rewrite Board to use two loops to make the squares instead of hardcoding them.</li>
-          <li>Add a toggle button that lets you sort the moves in either ascending or descending order.</li>
-          <li>When someone wins, highlight the three squares that caused the win.</li>
-          <li>When no one wins, display a message about the result being a draw.</li>
-      </ul>
-        </div>
-      </div>]
+      </div>
     );
   }
 
 }
 
-// ========================================
+
+// ================== ReactDOM Render ======================
 
 ReactDOM.render(
-  <Game />,
+  [<Game />, <hr/>, <GameDesc />],
   document.getElementById('root123')
 );
 
+// =================== Help Functions =====================
 // Given an array of 9 squares, this function will check for a winner and return 'X', 'O', or null as appropriate.
 function calculateWinner(squares) {
-  const lines = [
+  var lines = 
+  [
+    // horizontal
     [0,1,2],
     [3,4,5],
     [6,7,8],
+    // vertical 
     [0,3,6],
     [1,4,7],
     [2,5,8],
+    // crossing
     [0,4,8],
     [2,4,6]
   ];
-  for (let i = 0;i < lines.length; i++) {
+  /*
+  var match = [];
+  // add horizontal match cases into lines
+  for (let i = 0; i < boardsize; i += boardsize) {
+    for (let j = i; j < i + boardsize; j ++) {
+      match.push(j);
+    }
+    lines.push(match);
+    match = [];
+  }
+  // add vertical match cases
+  for (let i = 0; i < boardsize; i +=1) {
+    var match = [];
+    for (let j = i; j < (i + 1) * boardsize; j +=3) {
+      match.push(j);
+    }
+    lines.push(match);
+    match = [];
+  }
+  // add crossing match cases
+  for (let i = 0; i < boardsize * boardsize; i += 5) {
+    match.push(i);
+  }
+  lines.push(match);
+  match = [];
+  for (let i = boardsize - 1; i < boardsize * boardsize - (boardsize - 1); i += (boardsize - 1)) {
+    match.push(i);
+  }
+  lines.push(match);
+  */
+  for (let i = 0; i < lines.length; i++) {
+    //var hasWinner = false;
     const [a,b,c] = lines[i];
+    //var current = [];
     if (squares[a] && squares[a] === squares[b] && squares[a] === squares[c]) {
       return [squares[a], [a,b,c]];
     }
@@ -220,4 +274,15 @@ function calculateRowAndCol(index) {
     col = index - 5;
   }
   return [row, col];
+}
+
+function WarningBanner(props) {
+  if (!props.warn) {
+    return null;
+  }
+  return (
+    <div className="warning">
+      Warning! Size over limit(7)!
+    </div>
+  );
 }
