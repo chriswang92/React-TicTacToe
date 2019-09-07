@@ -1,6 +1,12 @@
-body {
+  body {
     font: 14px "Century Gothic", Futura, sans-serif;
     margin: 20px;
+    background-image: url('../src/images/light-lavender.jpg');
+    background-size: auto;
+  }
+  .row {
+    margin: 25px;
+    border: 5px double;
   }
   
   ol, ul {
@@ -61,4 +67,23 @@ body {
   
     font-size: 14pt;
     color: white;
+  }
+  .FancyBorder {
+    padding: 10px 10px;
+    border: 10px solid;
+  }
+  .FancyBorder-blue {
+    border-color: blue;
+  }
+  .Dialog-title {
+    margin: 0;
+    font-family: sans-serif;
+  }
+  .Dialog-message {
+    font-size: larger;
+  }
+  .FilterableProductTable {
+    padding: 10px 10px;
+    border: 10px solid;
+    border-color: yellow;
   }
